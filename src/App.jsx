@@ -242,52 +242,13 @@ function App() {
       setJob(json);
       if (json.status === "failed") {
         setError(json.error_message || "Separation failed");
-        setLoading(false);
-      } else if (json.status === "completed") {
-        setLoading(false);
       }
     } catch (uploadError) {
       setError(uploadError.message || "Unknown error");
+    } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!job?.id || job.status !== "processing") return;
-    let cancelled = false;
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await fetch(`${API_BASE}/jobs/${job.id}/`);
-        if (!response.ok) return;
-        const latest = await response.json();
-        if (cancelled) return;
-
-        setJob(latest);
-        if (latest.status === "failed") {
-          setError(latest.error_message || "Separation failed");
-          setLoading(false);
-        } else if (latest.status === "completed") {
-          setLoading(false);
-        }
-      } catch {
-        // Ignore transient polling failures.
-      }
-    }, 3000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(intervalId);
-    };
-  }, [job?.id, job?.status]);
-
-  useEffect(() => {
-    if (job?.status === "processing") {
-      setLoading(true);
-    }
-    if (job?.status === "completed" || job?.status === "failed") {
-      setLoading(false);
-    }
-  }, [job?.status]);
 
   useEffect(() => {
     return () => {
