@@ -3,8 +3,6 @@ dist/
 .vite/
 
 # env files
-.env
-.env.*
 
 # logs
 npm-debug.log*
@@ -21,4 +19,4 @@ coverage/
 .DS_Store
 Thumbs.db
 .idea/
-.vscode/
+config.bat
